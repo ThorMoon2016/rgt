@@ -381,6 +381,38 @@
 
 
 
+
+<script>
+    // Dohvat podataka iz Firebase baze podataka
+    const db = getDatabase();
+    const proizvodiRef = ref(db, 'proizvodi');
+
+    // Dohvat podataka
+    onValue(proizvodiRef, (snapshot) => {
+        const proizvodi = snapshot.val();
+        const proizvodiContainer = document.getElementById('proizvodi-container');
+
+        // Iteriranje kroz proizvode i generiranje HTML-a za prikaz
+        for (const key in proizvodi) {
+            if (Object.hasOwnProperty.call(proizvodi, key)) {
+                const proizvod = proizvodi[key];
+                // Generiranje HTML-a za prikaz proizvoda
+                const proizvodHTML = `
+                    <div>
+                        <h2>${proizvod.naziv}</h2>
+                        <p>Cijena: ${proizvod.cijena}</p>
+                        <img src="${proizvod.slika}" alt="${proizvod.naziv}">
+                        <!-- Ostale informacije o proizvodu -->
+                    </div>
+                `;
+                // Dodavanje HTML-a u kontejner za proizvode
+                proizvodiContainer.innerHTML += proizvodHTML;
+            }
+        }
+    });
+</script>
+
+
 <style>
     
 
