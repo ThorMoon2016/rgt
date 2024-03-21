@@ -197,7 +197,7 @@
         const akcija = document.getElementById('akcija').checked; // Provjeri je li označeno polje za provjeru "Akcija"
 
         // Kreirajte referencu za Firebase Storage
-        const storage = getStorage(app); // Dodaj inicijalizaciju storage varijable
+        const storage = getStorage(); // Dodaj inicijalizaciju storage varijable
         const storageRef = storage.ref('slike/' + slika.name);
 
         // Učitajte sliku na Firebase Storage
