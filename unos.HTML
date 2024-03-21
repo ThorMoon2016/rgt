@@ -182,38 +182,53 @@
     
 
     <script>
-       const db = getDatabase();
-const proizvodiRef = ref(db, 'proizvodi'); // 'proizvodi' je naziv čvora u bazi podataka gdje ćemo pohraniti proizvode
+    const db = getDatabase(); // Dodaj inicijalizaciju db varijable
+    const proizvodiRef = ref(db, 'proizvodi'); // 'proizvodi' je naziv čvora u bazi podataka gdje ćemo pohraniti proizvode
 
-function dodajProizvod() {
-    // Dohvatite vrijednosti unesene od strane korisnika
-    const naziv = document.getElementById('naziv').value;
-    const cijena = document.getElementById('cijena').value;
-    const slika = document.getElementById('slika').files[0]; // Prva odabrana slika
-    const stranica = document.getElementById('stranica').value;
-    const akcija = document.getElementById('akcija').checked; // Provjeri je li označeno polje za provjeru "Akcija"
+    // Funkcija za učitavanje slike i spremanje referenci u Firebase Storage i Realtime Database
+    function dodajProizvod() {
+        // Dohvatite vrijednosti unesene od strane korisnika
+        const naziv = document.getElementById('naziv').value;
+        const cijena = document.getElementById('cijena').value;
+        const slika = document.getElementById('slika').files[0]; // Prva odabrana slika
+        const stranica = document.getElementById('stranica').value;
+        const akcija = document.getElementById('akcija').checked; // Provjeri je li označeno polje za provjeru "Akcija"
 
-    // Kreirajte objekt za novi proizvod
-    const noviProizvod = {
-        naziv: naziv,
-        cijena: cijena,
-        slika: slika.name, // Ovdje možete pohraniti samo ime slike, a samu sliku možete pohraniti u Firebase Storage
-        stranica: stranica,
-        akcija: akcija
-    };
+        // Kreirajte referencu za Firebase Storage
+        const storage = getStorage(app); // Dodaj inicijalizaciju storage varijable
+        const storageRef = storage.ref('slike/' + slika.name);
 
-    // Pohranite novi proizvod u Firebase Realtime Database
-    push(proizvodiRef, noviProizvod);
+        // Učitajte sliku na Firebase Storage
+        storageRef.put(slika).then((snapshot) => {
+            // Kada je učitavanje slike završeno, dohvatite URL slike
+            snapshot.ref.getDownloadURL().then((downloadURL) => {
+                // Kreirajte objekt za novi proizvod
+                const noviProizvod = {
+                    naziv: naziv,
+                    cijena: cijena,
+                    slika: downloadURL, // URL slike
+                    stranica: stranica,
+                    akcija: akcija
+                };
 
+                // Pohranite novi proizvod u Firebase Realtime Database
+                push(proizvodiRef, noviProizvod).then(() => {
+                    // Ako je pohranjivanje uspješno, pohrani podatke i preusmjeri korisnika na odabranu stranicu
+                    let proizvodi = JSON.parse(localStorage.getItem('proizvodi')) || [];
+                    proizvodi.push(noviProizvod);
+                    localStorage.setItem('proizvodi', JSON.stringify(proizvodi));
 
-    
-            let proizvodi = JSON.parse(localStorage.getItem('proizvodi')) || [];
-            proizvodi.push(noviProizvod);
-            localStorage.setItem('proizvodi', JSON.stringify(proizvodi));
-    
-            window.location.href = stranica; // Preusmjeri na odabranu stranicu
-        }
-    </script>
+                    window.location.href = stranica; // Preusmjeri na odabranu stranicu
+                }).catch(error => {
+                    console.error('Došlo je do pogreške prilikom pohrane proizvoda:', error);
+                });
+            });
+        }).catch(error => {
+            console.error('Došlo je do pogreške prilikom učitavanja slike:', error);
+        });
+    }
+</script>
+
     
 
     
