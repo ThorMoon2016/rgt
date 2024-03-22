@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prodaja Cvijeća</title>
+    <title>Robot</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://www.paypal.com/sdk/js?client-id=Afzc1IlgRQANkX3NGrGcsvTxA5EtNwUQZeLbuicoNCM-hZxx13uq2LyJESOmeue6FLZJELnCp4xTOoXn"></script>
@@ -18,6 +18,12 @@
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-analytics.js";
         import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
      import { getStorage } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-storage.js"; // Dodajte ovu liniju za uključivanje Firebase Storage SDK-a
+
+document.addEventListener("DOMContentLoaded", function() {
+    // Pozivamo dodajProizvod() samo kada je cijeli dokument učitan
+    dodajProizvod();
+});
+
 
 const storage = getStorage();
         // TODO: Add SDKs for Firebase products that you want to use
